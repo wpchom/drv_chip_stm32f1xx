@@ -12,7 +12,7 @@ config("drv_chip_stm32f1xx_config") {
   include_dirs = [ "inc/" ]
 }
 
-source_set("drv_chip_stm32f1xx") {
+static_library("drv_chip_stm32f1xx") {
   sources = [
     "src/drv_gpio.c",
     "src/drv_i2c.c",
