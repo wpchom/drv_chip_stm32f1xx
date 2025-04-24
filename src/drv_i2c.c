@@ -7,7 +7,6 @@
 /* Include ----------------------------------------------------------------- */
 #include "drv_i2c.h"
 #include "drv_chip.h"
-#include "mds_log.h"
 
 /* Function ---------------------------------------------------------------- */
 MDS_Err_t DRV_I2C_Init(DRV_I2C_Handle_t *hi2c, I2C_TypeDef *I2Cx)
@@ -26,14 +25,14 @@ MDS_Err_t DRV_I2C_DeInit(DRV_I2C_Handle_t *hi2c)
     return (MDS_SemaphoreDeInit(&(hi2c->sem)));
 }
 
-MDS_Err_t DRV_I2C_Open(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Object_t *object)
+MDS_Err_t DRV_I2C_Config(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Config_t *config)
 {
     MDS_ASSERT(hi2c != NULL);
-    MDS_ASSERT(object != NULL);
+    MDS_ASSERT(config != NULL);
 
-    hi2c->handle.Init.ClockSpeed = object->clock;
-    hi2c->handle.Init.OwnAddress1 = object->devAddress << 1U;
-    hi2c->handle.Init.AddressingMode = (object->devAddrBit == DEV_I2C_DEVADDRBITS_10) ? (I2C_ADDRESSINGMODE_10BIT)
+    hi2c->handle.Init.ClockSpeed = config->clock;
+    hi2c->handle.Init.OwnAddress1 = config->devAddress << 1U;
+    hi2c->handle.Init.AddressingMode = (config->devAddrBit == DEV_I2C_DEVADDRBITS_10) ? (I2C_ADDRESSINGMODE_10BIT)
                                                                                       : (I2C_ADDRESSINGMODE_7BIT);
 
     HAL_StatusTypeDef status = HAL_I2C_Init(&(hi2c->handle));
@@ -41,7 +40,7 @@ MDS_Err_t DRV_I2C_Open(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Object_t *object)
     return (DRV_HalStatusToMdsErr(status));
 }
 
-MDS_Err_t DRV_I2C_Close(DRV_I2C_Handle_t *hi2c)
+MDS_Err_t DRV_I2C_Abort(DRV_I2C_Handle_t *hi2c)
 {
     MDS_ASSERT(hi2c != NULL);
 
@@ -359,9 +358,9 @@ static MDS_Err_t DDRV_I2C_Control(const DEV_I2C_Adaptr_t *i2c, MDS_Item_t cmd, M
             MDS_DEVICE_ARG_HANDLE_SIZE(arg, DRV_I2C_Handle_t);
             return (MDS_EOK);
         case MDS_DEVICE_CMD_OPEN:
-            return (DRV_I2C_Open(hi2c, &(((DEV_I2C_Periph_t *)arg)->object)));
+            return (DRV_I2C_Config(hi2c, &(((DEV_I2C_Periph_t *)arg)->config)));
         case MDS_DEVICE_CMD_CLOSE:
-            return (DRV_I2C_Close(hi2c));
+            return (DRV_I2C_Abort(hi2c));
     }
 
     return (MDS_EACCES);

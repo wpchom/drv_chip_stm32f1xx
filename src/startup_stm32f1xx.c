@@ -11,33 +11,33 @@
  */
 
 #if defined(STM32F100xB)
-#include "startup/stm32f100xb.c"
+#include "startup/stm32f100xb.c.in"
 #elif defined(STM32F100xE)
-#include "startup/stm32f100xe.c"
+#include "startup/stm32f100xe.c.in"
 #elif defined(STM32F101x6)
-#include "startup/stm32f101x6.c"
+#include "startup/stm32f101x6.c.in"
 #elif defined(STM32F101xB)
-#include "startup/stm32f101xb.c"
+#include "startup/stm32f101xb.c.in"
 #elif defined(STM32F101xE)
-#include "startup/stm32f101xe.c"
+#include "startup/stm32f101xe.c.in"
 #elif defined(STM32F101xG)
-#include "startup/stm32f101xg.c"
+#include "startup/stm32f101xg.c.in"
 #elif defined(STM32F102x6)
-#include "startup/stm32f102x6.c"
+#include "startup/stm32f102x6.c.in"
 #elif defined(STM32F102xB)
-#include "startup/stm32f102xb.c"
+#include "startup/stm32f102xb.c.in"
 #elif defined(STM32F103x6)
-#include "startup/stm32f103x6.c"
+#include "startup/stm32f103x6.c.in"
 #elif defined(STM32F103xB)
-#include "startup/stm32f103xb.c"
+#include "startup/stm32f103xb.c.in"
 #elif defined(STM32F103xE)
-#include "startup/stm32f103xe.c"
+#include "startup/stm32f103xe.c.in"
 #elif defined(STM32F103xG)
-#include "startup/stm32f103xg.c"
+#include "startup/stm32f103xg.c.in"
 #elif defined(STM32F105xC)
-#include "startup/stm32f105xc.c"
+#include "startup/stm32f105xc.c.in"
 #elif defined(STM32F107xC)
-#include "startup/stm32f107xc.c"
+#include "startup/stm32f107xc.c.in"
 #else
 #error "Please select first the target STM32F1xx device used in your application (in stm32f1xx.h file)"
 #endif
@@ -73,11 +73,11 @@ __attribute__((weak)) void VectorInit(uintptr_t vectorAddress)
     SCB->VTOR = vectorAddress;
 }
 
-__attribute__((noreturn)) void Reset_Handler(void)
+__attribute__((naked, noreturn)) void Reset_Handler(void)
 {
     __disable_irq();
 
-    __set_MSP((uint32_t)__INITIAL_SP);
+    __set_MSP((uint32_t)(&__INITIAL_SP));
 
     SystemInit();
 
@@ -88,7 +88,7 @@ __attribute__((noreturn)) void Reset_Handler(void)
     __PROGRAM_START();
 }
 
-__attribute__((noreturn)) void BOOT_JumpIntoVectorTable(uintptr_t vectorAddress)
+__attribute__((noreturn)) void DRV_CHIP_JumpIntoVectorAddress(uintptr_t vectorAddress)
 {
     typedef void (*vector_t)(void);
     vector_t *vectorTable = (vector_t *)(vectorAddress);
@@ -107,12 +107,12 @@ __attribute__((noreturn)) void BOOT_JumpIntoVectorTable(uintptr_t vectorAddress)
     }
 }
 
-__attribute__((__noreturn__)) void BOOT_JumpIntoDFU(void)
+__attribute__((__noreturn__)) void DRV_CHIP_JumpIntoDFU(void)
 {
-    BOOT_JumpIntoVectorTable(0x1FFF0000);
+    DRV_CHIP_JumpIntoVectorAddress(0x1FFFF000);
 }
 
-__attribute__((__noreturn__)) void BOOT_SystemReset(void)
+__attribute__((__noreturn__)) void DRV_CHIP_SystemReset(void)
 {
     NVIC_SystemReset();
 }

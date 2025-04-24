@@ -6,15 +6,14 @@
  */
 /* Include ----------------------------------------------------------------- */
 #include "drv_gpio.h"
-#include "mds_log.h"
 
 /* Function ---------------------------------------------------------------- */
 static void DRV_GPIO_PinWrite(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin, uint32_t val)
 {
     uint32_t shift = __CLZ(__RBIT(GPIO_Pin));
     if (shift < GPIO_BSRR_BR0_Pos) {
-        uint32_t set = (val << shift) & GPIO_Pin;  // 00(101)11 & 00(111)00 => 00(101)00
-        uint32_t clr = (~set) & GPIO_Pin;          // 11(010)00 & 00(111)00 => 00(010)00
+        uint32_t set = (val << shift) & GPIO_Pin;
+        uint32_t clr = (~set) & GPIO_Pin;
         WRITE_REG(GPIOx->BSRR, clr << GPIO_BSRR_BR0_Pos | set);
     }
 }
@@ -145,7 +144,7 @@ static MDS_Mask_t DDRV_GPIO_PinRead(const DEV_GPIO_Pin_t *pin, bool input)
 
     MDS_Mask_t read = (input) ? (DRV_GPIO_PortReadInput(GPIOx)) : (DRV_GPIO_PortReadOutput(GPIOx));
 
-    return (read >> __CLZ(__RBIT(pin->object.pinMask)));
+    return ((read & pin->object.pinMask) >> __CLZ(__RBIT(pin->object.pinMask)));
 }
 
 static void DDRV_GPIO_PinWrite(const DEV_GPIO_Pin_t *pin, MDS_Mask_t val)

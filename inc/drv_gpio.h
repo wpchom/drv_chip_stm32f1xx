@@ -18,16 +18,16 @@ extern "C" {
 #endif
 
 /* Function ---------------------------------------------------------------- */
-extern MDS_Err_t DRV_GPIO_PinConfig(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin, const DEV_GPIO_Config_t *config);
+MDS_Err_t DRV_GPIO_PinConfig(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin, const DEV_GPIO_Config_t *config);
 
-extern uint32_t DRV_GPIO_PortReadInput(GPIO_TypeDef *GPIOx);
-extern uint32_t DRV_GPIO_PortReadOutput(GPIO_TypeDef *GPIOx);
-extern void DRV_GPIO_PortWrite(GPIO_TypeDef *GPIOx, uint32_t val);
-extern void DRV_GPIO_PinHigh(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin);
-extern void DRV_GPIO_PinLow(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin);
-extern void DRV_GPIO_PinToggle(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin);
+uint32_t DRV_GPIO_PortReadInput(GPIO_TypeDef *GPIOx);
+uint32_t DRV_GPIO_PortReadOutput(GPIO_TypeDef *GPIOx);
+void DRV_GPIO_PortWrite(GPIO_TypeDef *GPIOx, uint32_t val);
+void DRV_GPIO_PinHigh(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin);
+void DRV_GPIO_PinLow(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin);
+void DRV_GPIO_PinToggle(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin);
 
-extern void DRV_GPIO_PinIRQHandler(DEV_GPIO_Object_t *object);
+void DRV_GPIO_PinIRQHandler(DEV_GPIO_Object_t *object);
 
 /* Driver ------------------------------------------------------------------ */
 extern const DEV_GPIO_Driver_t G_DRV_STM32F1XX_GPIO;

@@ -46,6 +46,10 @@ static inline MDS_Tick_t DRV_HalGetTick(void)
     return (count);
 }
 
+void DRV_CHIP_JumpIntoVectorAddress(uintptr_t vectorAddress);
+void DRV_CHIP_JumpIntoDFU(void);
+void DRV_CHIP_SystemReset(void);
+
 #ifdef __cplusplus
 }
 #endif
