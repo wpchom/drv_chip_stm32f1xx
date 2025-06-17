@@ -23,7 +23,7 @@ static inline MDS_Err_t DRV_HalStatusToMdsErr(HAL_StatusTypeDef status)
     } else if (status == HAL_BUSY) {
         return (MDS_EBUSY);
     } else if (status == HAL_TIMEOUT) {
-        return (MDS_ETIME);
+        return (MDS_ETIMEOUT);
     } else {
         return (MDS_EIO);
     }
@@ -34,13 +34,13 @@ static inline MDS_Tick_t DRV_HalGetTick(void)
     uint32_t count = 0;
 
     if ((DCB->DEMCR & DCB_DEMCR_TRCENA_Msk) == 0U) {
-        MDS_Item_t lock = MDS_CoreInterruptLock();
+        MDS_Lock_t lock = MDS_CriticalLock(NULL);
         DCB->DEMCR |= DCB_DEMCR_TRCENA_Msk;
         DWT->CYCCNT = 0;
         DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
-        MDS_CoreInterruptRestore(lock);
+        MDS_CriticalRestore(NULL, lock);
     } else {
-        count = DWT->CYCCNT / (SystemCoreClock / MDS_CLOCK_TICK_FREQ_HZ);
+        count = DWT->CYCCNT / (SystemCoreClock / CONFIG_MDS_CLOCK_TICK_FREQ_HZ);
     }
 
     return (count);

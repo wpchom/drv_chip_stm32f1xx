@@ -18,7 +18,8 @@ static void DRV_GPIO_PinWrite(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin, uint32_t v
     }
 }
 
-MDS_Err_t DRV_GPIO_PinConfig(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin, const DEV_GPIO_Config_t *config)
+MDS_Err_t DRV_GPIO_PinConfig(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin,
+                             const DEV_GPIO_Config_t *config)
 {
     MDS_ASSERT(config != NULL);
 
@@ -89,9 +90,9 @@ void DRV_GPIO_PinLow(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin)
 
 void DRV_GPIO_PinToggle(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin)
 {
-    MDS_Item_t lock = MDS_CoreInterruptLock();
+    MDS_Lock_t lock = MDS_CriticalLock(NULL);
     LL_GPIO_TogglePin(GPIOx, GPIO_Pin);
-    MDS_CoreInterruptRestore(lock);
+    MDS_CriticalRestore(NULL, lock);
 }
 
 void DRV_GPIO_PinIRQHandler(DEV_GPIO_Object_t *object)
@@ -107,7 +108,8 @@ void DRV_GPIO_PinIRQHandler(DEV_GPIO_Object_t *object)
 }
 
 /* Driver ------------------------------------------------------------------ */
-static MDS_Err_t DDRV_GPIO_PortControl(const DEV_GPIO_Module_t *gpio, MDS_Item_t cmd, MDS_Arg_t *arg)
+static MDS_Err_t DDRV_GPIO_PortControl(const DEV_GPIO_Module_t *gpio, MDS_DeviceCmd_t cmd,
+                                       MDS_Arg_t *arg)
 {
     MDS_ASSERT(gpio != NULL);
 

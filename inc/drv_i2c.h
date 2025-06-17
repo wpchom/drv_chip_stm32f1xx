@@ -29,15 +29,15 @@ MDS_Err_t DRV_I2C_DeInit(DRV_I2C_Handle_t *hi2c);
 MDS_Err_t DRV_I2C_Open(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Object_t *object);
 MDS_Err_t DRV_I2C_Close(DRV_I2C_Handle_t *hi2c);
 
-MDS_Err_t DRV_I2C_MasterTransfer(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Msg_t *msg, MDS_Tick_t timeout);
+MDS_Err_t DRV_I2C_MasterTransfer(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Msg_t *msg, MDS_Timeout_t timeout);
 MDS_Err_t DRV_I2C_MasterTransferINT(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Msg_t *msg);
-MDS_Err_t DRV_I2C_MasterWait(DRV_I2C_Handle_t *hi2c, MDS_Tick_t tickout);
+MDS_Err_t DRV_I2C_MasterWait(DRV_I2C_Handle_t *hi2c, MDS_Timeout_t timeout);
 MDS_Err_t DRV_I2C_MasterAbort(DRV_I2C_Handle_t *hi2c);
 
 MDS_Err_t DRV_I2C_SlaveListenINT(DRV_I2C_Handle_t *hi2c);
 MDS_Err_t DRV_I2C_SlaveReceiveINT(DRV_I2C_Handle_t *hi2c, uint8_t *buff, size_t size);
 MDS_Err_t DRV_I2C_SlaveTransmitINT(DRV_I2C_Handle_t *hi2c, uint8_t *buff, size_t len);
-MDS_Err_t DRV_I2C_SlaveWait(DRV_I2C_Handle_t *hi2c, size_t *len, MDS_Tick_t tickout);
+MDS_Err_t DRV_I2C_SlaveWait(DRV_I2C_Handle_t *hi2c, size_t *len, MDS_Timeout_t timeout);
 MDS_Err_t DRV_I2C_SlaveAbort(DRV_I2C_Handle_t *hi2c);
 
 void DRV_I2C_EV_IRQHandler(DRV_I2C_Handle_t *hi2c);

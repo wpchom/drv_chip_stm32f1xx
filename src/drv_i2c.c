@@ -32,8 +32,9 @@ MDS_Err_t DRV_I2C_Config(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Config_t *config)
 
     hi2c->handle.Init.ClockSpeed = config->clock;
     hi2c->handle.Init.OwnAddress1 = config->devAddress << 1U;
-    hi2c->handle.Init.AddressingMode = (config->devAddrBit == DEV_I2C_DEVADDRBITS_10) ? (I2C_ADDRESSINGMODE_10BIT)
-                                                                                      : (I2C_ADDRESSINGMODE_7BIT);
+    hi2c->handle.Init.AddressingMode = (config->devAddrBit == DEV_I2C_DEVADDRBITS_10)
+                                           ? (I2C_ADDRESSINGMODE_10BIT)
+                                           : (I2C_ADDRESSINGMODE_7BIT);
 
     HAL_StatusTypeDef status = HAL_I2C_Init(&(hi2c->handle));
 
@@ -49,8 +50,9 @@ MDS_Err_t DRV_I2C_Abort(DRV_I2C_Handle_t *hi2c)
     return (DRV_HalStatusToMdsErr(status));
 }
 
-static HAL_StatusTypeDef I2C_WaitOnFlagWithEscapeCheck(I2C_HandleTypeDef *hi2c, uint32_t waitFlag, uint32_t escFlag,
-                                                       MDS_Tick_t tickout, MDS_Tick_t tickstart)
+static HAL_StatusTypeDef I2C_WaitOnFlagWithEscapeCheck(I2C_HandleTypeDef *hi2c, uint32_t waitFlag,
+                                                       uint32_t escFlag, MDS_Tick_t tickout,
+                                                       MDS_Tick_t tickstart)
 {
     while ((DRV_HalGetTick() - tickstart) < tickout) {
         if (__HAL_I2C_GET_FLAG(hi2c, waitFlag) != RESET) {
@@ -66,8 +68,8 @@ static HAL_StatusTypeDef I2C_WaitOnFlagWithEscapeCheck(I2C_HandleTypeDef *hi2c, 
     return (HAL_ERROR);
 }
 
-static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_t devAddr, MDS_Tick_t tickout,
-                                                MDS_Tick_t tickstart)
+static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_t devAddr,
+                                                MDS_Tick_t tickout, MDS_Tick_t tickstart)
 {
     HAL_StatusTypeDef ret;
 
@@ -95,8 +97,8 @@ static HAL_StatusTypeDef I2C_MasterRequestWrite(I2C_HandleTypeDef *hi2c, uint16_
     return (ret);
 }
 
-static HAL_StatusTypeDef I2C_MasterRequestRead(I2C_HandleTypeDef *hi2c, uint16_t devAddr, MDS_Tick_t tickout,
-                                               MDS_Tick_t tickstart)
+static HAL_StatusTypeDef I2C_MasterRequestRead(I2C_HandleTypeDef *hi2c, uint16_t devAddr,
+                                               MDS_Tick_t tickout, MDS_Tick_t tickstart)
 {
     HAL_StatusTypeDef ret;
 
@@ -139,7 +141,8 @@ static HAL_StatusTypeDef I2C_MasterRequestRead(I2C_HandleTypeDef *hi2c, uint16_t
     return (ret);
 }
 
-static HAL_StatusTypeDef HAL_I2C_Master_OpreateTransmit(I2C_HandleTypeDef *hi2c, const DEV_I2C_Msg_t *msg,
+static HAL_StatusTypeDef HAL_I2C_Master_OpreateTransmit(I2C_HandleTypeDef *hi2c,
+                                                        const DEV_I2C_Msg_t *msg,
                                                         MDS_Tick_t tickout)
 {
     HAL_StatusTypeDef ret = HAL_OK;
@@ -173,7 +176,8 @@ static HAL_StatusTypeDef HAL_I2C_Master_OpreateTransmit(I2C_HandleTypeDef *hi2c,
     return (ret);
 }
 
-static HAL_StatusTypeDef HAL_I2C_Master_OpreateReceive(I2C_HandleTypeDef *hi2c, const DEV_I2C_Msg_t *msg,
+static HAL_StatusTypeDef HAL_I2C_Master_OpreateReceive(I2C_HandleTypeDef *hi2c,
+                                                       const DEV_I2C_Msg_t *msg,
                                                        MDS_Tick_t tickout)
 {
     HAL_StatusTypeDef ret = HAL_OK;
@@ -186,7 +190,8 @@ static HAL_StatusTypeDef HAL_I2C_Master_OpreateReceive(I2C_HandleTypeDef *hi2c, 
     }
 
     while ((ret == HAL_OK) && (idx < msg->len)) {
-        ret = I2C_WaitOnFlagWithEscapeCheck(hi2c, I2C_FLAG_RXNE, I2C_FLAG_STOPF, tickout, tickstart);
+        ret = I2C_WaitOnFlagWithEscapeCheck(hi2c, I2C_FLAG_RXNE, I2C_FLAG_STOPF, tickout,
+                                            tickstart);
         if (ret != HAL_OK) {
             break;
         }
@@ -211,7 +216,8 @@ static HAL_StatusTypeDef HAL_I2C_Master_OpreateReceive(I2C_HandleTypeDef *hi2c, 
     return (ret);
 }
 
-HAL_StatusTypeDef HAL_I2C_Master_Transfer(I2C_HandleTypeDef *hi2c, const DEV_I2C_Msg_t *msg, MDS_Tick_t tickout)
+HAL_StatusTypeDef HAL_I2C_Master_Transfer(I2C_HandleTypeDef *hi2c, const DEV_I2C_Msg_t *msg,
+                                          MDS_Tick_t tickout)
 {
     HAL_StatusTypeDef ret;
 
@@ -230,11 +236,12 @@ HAL_StatusTypeDef HAL_I2C_Master_Transfer(I2C_HandleTypeDef *hi2c, const DEV_I2C
     return (ret);
 }
 
-MDS_Err_t DRV_I2C_MasterTransfer(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Msg_t *msg, MDS_Tick_t tickout)
+MDS_Err_t DRV_I2C_MasterTransfer(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Msg_t *msg,
+                                 MDS_Timeout_t timeout)
 {
     MDS_ASSERT(hi2c != NULL);
 
-    HAL_StatusTypeDef status = HAL_I2C_Master_Transfer(&(hi2c->handle), msg, tickout);
+    HAL_StatusTypeDef status = HAL_I2C_Master_Transfer(&(hi2c->handle), msg, timeout.ticks);
 
     return (DRV_HalStatusToMdsErr(status));
 }
@@ -247,34 +254,37 @@ MDS_Err_t DRV_I2C_MasterTransferINT(DRV_I2C_Handle_t *hi2c, const DEV_I2C_Msg_t 
     HAL_StatusTypeDef status;
 
     if ((msg->flags & DEV_I2C_MSGFLAG_NO_START) != 0U) {
-        xferOptions = ((msg->flags & DEV_I2C_MSGFLAG_NO_STOP) != 0U) ? (I2C_LAST_FRAME_NO_STOP) : (I2C_LAST_FRAME);
+        xferOptions = ((msg->flags & DEV_I2C_MSGFLAG_NO_STOP) != 0U) ? (I2C_LAST_FRAME_NO_STOP)
+                                                                     : (I2C_LAST_FRAME);
     } else {
-        xferOptions = ((msg->flags & DEV_I2C_MSGFLAG_NO_STOP) != 0U) ? (I2C_FIRST_FRAME) : (I2C_FIRST_AND_LAST_FRAME);
+        xferOptions = ((msg->flags & DEV_I2C_MSGFLAG_NO_STOP) != 0U) ? (I2C_FIRST_FRAME)
+                                                                     : (I2C_FIRST_AND_LAST_FRAME);
     }
 
     if ((msg->flags & DEV_I2C_MSGFLAG_RD) != 0U) {
-        status = HAL_I2C_Master_Seq_Receive_IT(&(hi2c->handle), hi2c->handle.Init.OwnAddress1, msg->buff, msg->len,
-                                               xferOptions);
+        status = HAL_I2C_Master_Seq_Receive_IT(&(hi2c->handle), hi2c->handle.Init.OwnAddress1,
+                                               msg->buff, msg->len, xferOptions);
     } else {
-        status = HAL_I2C_Master_Seq_Transmit_IT(&(hi2c->handle), hi2c->handle.Init.OwnAddress1, msg->buff, msg->len,
-                                                xferOptions);
+        status = HAL_I2C_Master_Seq_Transmit_IT(&(hi2c->handle), hi2c->handle.Init.OwnAddress1,
+                                                msg->buff, msg->len, xferOptions);
     }
 
     return (DRV_HalStatusToMdsErr(status));
 }
 
-MDS_Err_t DRV_I2C_MasterWait(DRV_I2C_Handle_t *hi2c, MDS_Tick_t tickout)
+MDS_Err_t DRV_I2C_MasterWait(DRV_I2C_Handle_t *hi2c, MDS_Timeout_t timeout)
 {
     MDS_ASSERT(hi2c != NULL);
 
-    return (MDS_SemaphoreAcquire(&(hi2c->sem), tickout));
+    return (MDS_SemaphoreAcquire(&(hi2c->sem), timeout));
 }
 
 MDS_Err_t DRV_I2C_MasterAbort(DRV_I2C_Handle_t *hi2c)
 {
     MDS_ASSERT(hi2c != NULL);
 
-    HAL_StatusTypeDef status = HAL_I2C_Master_Abort_IT(&(hi2c->handle), hi2c->handle.Init.OwnAddress1);
+    HAL_StatusTypeDef status = HAL_I2C_Master_Abort_IT(&(hi2c->handle),
+                                                       hi2c->handle.Init.OwnAddress1);
 
     return (DRV_HalStatusToMdsErr(status));
 }
@@ -306,11 +316,11 @@ MDS_Err_t DRV_I2C_SlaveTransmitINT(DRV_I2C_Handle_t *hi2c, uint8_t *buff, size_t
     return (DRV_HalStatusToMdsErr(status));
 }
 
-MDS_Err_t DRV_I2C_SlaveWait(DRV_I2C_Handle_t *hi2c, size_t *len, MDS_Tick_t tickout)
+MDS_Err_t DRV_I2C_SlaveWait(DRV_I2C_Handle_t *hi2c, size_t *len, MDS_Timeout_t timeout)
 {
     MDS_ASSERT(hi2c != NULL);
 
-    MDS_Err_t err = MDS_SemaphoreAcquire(&(hi2c->sem), tickout);
+    MDS_Err_t err = MDS_SemaphoreAcquire(&(hi2c->sem), timeout);
 
     if (len != NULL) {
         *len = hi2c->handle.XferCount;
@@ -343,7 +353,7 @@ void DRV_I2C_ER_IRQHandler(DRV_I2C_Handle_t *hi2c)
 }
 
 /* Driver ------------------------------------------------------------------ */
-static MDS_Err_t DDRV_I2C_Control(const DEV_I2C_Adaptr_t *i2c, MDS_Item_t cmd, MDS_Arg_t *arg)
+static MDS_Err_t DDRV_I2C_Control(const DEV_I2C_Adaptr_t *i2c, MDS_DeviceCmd_t cmd, MDS_Arg_t *arg)
 {
     MDS_ASSERT(i2c != NULL);
 
@@ -366,21 +376,22 @@ static MDS_Err_t DDRV_I2C_Control(const DEV_I2C_Adaptr_t *i2c, MDS_Item_t cmd, M
     return (MDS_EACCES);
 }
 
-static MDS_Err_t DDRV_I2C_MasterTransfer(const DEV_I2C_Periph_t *periph, const DEV_I2C_Msg_t *msg, MDS_Tick_t tickout)
+static MDS_Err_t DDRV_I2C_MasterTransfer(const DEV_I2C_Periph_t *periph, const DEV_I2C_Msg_t *msg,
+                                         MDS_Timeout_t timeout)
 {
     DRV_I2C_Handle_t *hi2c = (DRV_I2C_Handle_t *)(periph->mount->handle);
 
-    return (DRV_I2C_MasterTransfer(hi2c, msg, tickout));
+    return (DRV_I2C_MasterTransfer(hi2c, msg, timeout));
 }
 
-static MDS_Err_t DDRV_I2C_MasterTransferINT(const DEV_I2C_Periph_t *periph, const DEV_I2C_Msg_t *msg,
-                                            MDS_Tick_t tickout)
+static MDS_Err_t DDRV_I2C_MasterTransferINT(const DEV_I2C_Periph_t *periph,
+                                            const DEV_I2C_Msg_t *msg, MDS_Timeout_t timeout)
 {
     DRV_I2C_Handle_t *hi2c = (DRV_I2C_Handle_t *)(periph->mount->handle);
 
     MDS_Err_t err = DRV_I2C_MasterTransferINT(hi2c, msg);
     if (err == MDS_EOK) {
-        err = DRV_I2C_MasterWait(hi2c, tickout);
+        err = DRV_I2C_MasterWait(hi2c, timeout);
     } else {
         DRV_I2C_MasterAbort(hi2c);
     }
@@ -388,8 +399,8 @@ static MDS_Err_t DDRV_I2C_MasterTransferINT(const DEV_I2C_Periph_t *periph, cons
     return (err);
 }
 
-static MDS_Err_t DDRV_I2C_SlaveTransferINT(const DEV_I2C_Periph_t *periph, DEV_I2C_Msg_t *msg, size_t *len,
-                                           MDS_Tick_t tickout)
+static MDS_Err_t DDRV_I2C_SlaveTransferINT(const DEV_I2C_Periph_t *periph, DEV_I2C_Msg_t *msg,
+                                           size_t *len, MDS_Timeout_t timeout)
 {
     MDS_Err_t err;
     DRV_I2C_Handle_t *hi2c = (DRV_I2C_Handle_t *)(periph->mount->handle);
@@ -399,12 +410,12 @@ static MDS_Err_t DDRV_I2C_SlaveTransferINT(const DEV_I2C_Periph_t *periph, DEV_I
     } else if ((msg->flags & DEV_I2C_MSGFLAG_RD) != 0U) {
         err = DRV_I2C_SlaveReceiveINT(hi2c, msg->buff, msg->len);
         if (err == MDS_EOK) {
-            err = DRV_I2C_SlaveWait(hi2c, len, tickout);
+            err = DRV_I2C_SlaveWait(hi2c, len, timeout);
         }
     } else {
         err = DRV_I2C_SlaveTransmitINT(hi2c, msg->buff, msg->len);
         if (err == MDS_EOK) {
-            err = DRV_I2C_SlaveWait(hi2c, len, tickout);
+            err = DRV_I2C_SlaveWait(hi2c, len, timeout);
         }
     }
     if (err != MDS_EOK) {
