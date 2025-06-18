@@ -353,7 +353,7 @@ void DRV_I2C_ER_IRQHandler(DRV_I2C_Handle_t *hi2c)
 }
 
 /* Driver ------------------------------------------------------------------ */
-static MDS_Err_t DDRV_I2C_Control(const DEV_I2C_Adaptr_t *i2c, MDS_DeviceCmd_t cmd, MDS_Arg_t *arg)
+static MDS_Err_t DDRV_I2C_Control(const DEV_I2C_Adaptr_t *i2c, MDS_Item_t cmd, MDS_Arg_t *arg)
 {
     MDS_ASSERT(i2c != NULL);
 

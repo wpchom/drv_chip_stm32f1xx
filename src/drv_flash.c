@@ -98,7 +98,7 @@ MDS_Err_t DRV_FLASH_Erase(uintptr_t addr, size_t size, size_t *erase)
 }
 
 /* Driver ------------------------------------------------------------------ */
-static MDS_Err_t DDRV_FLASH_Control(const DEV_STORAGE_Adaptr_t *storage, MDS_DeviceCmd_t cmd,
+static MDS_Err_t DDRV_FLASH_Control(const DEV_STORAGE_Adaptr_t *storage, MDS_Item_t cmd,
                                     MDS_Arg_t *arg)
 {
     MDS_ASSERT(storage != NULL);
