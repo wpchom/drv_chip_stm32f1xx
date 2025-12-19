@@ -353,7 +353,7 @@ void DRV_I2C_ER_IRQHandler(DRV_I2C_Handle_t *hi2c)
 }
 
 /* Driver ------------------------------------------------------------------ */
-static MDS_Err_t DDRV_I2C_Control(const DEV_I2C_Adaptr_t *i2c, MDS_Item_t cmd, MDS_Arg_t *arg)
+static MDS_Err_t DDRV_I2C_Control(const DEV_I2C_Adaptr_t *i2c, MDS_DevCmd_t cmd, MDS_Arg_t *arg)
 {
     MDS_ASSERT(i2c != NULL);
 
@@ -390,7 +390,7 @@ static MDS_Err_t DDRV_I2C_MasterTransferINT(const DEV_I2C_Periph_t *periph,
     DRV_I2C_Handle_t *hi2c = (DRV_I2C_Handle_t *)(periph->mount->handle);
 
     MDS_Err_t err = DRV_I2C_MasterTransferINT(hi2c, msg);
-    if (err == MDS_EOK) {
+    if (MDS_ErrIsSame(err, MDS_EOK)) {
         err = DRV_I2C_MasterWait(hi2c, timeout);
     } else {
         DRV_I2C_MasterAbort(hi2c);
@@ -409,16 +409,16 @@ static MDS_Err_t DDRV_I2C_SlaveTransferINT(const DEV_I2C_Periph_t *periph, DEV_I
         err = DRV_I2C_SlaveListenINT(hi2c);
     } else if ((msg->flags & DEV_I2C_MSGFLAG_RD) != 0U) {
         err = DRV_I2C_SlaveReceiveINT(hi2c, msg->buff, msg->len);
-        if (err == MDS_EOK) {
+        if (MDS_ErrIsSame(err, MDS_EOK)) {
             err = DRV_I2C_SlaveWait(hi2c, len, timeout);
         }
     } else {
         err = DRV_I2C_SlaveTransmitINT(hi2c, msg->buff, msg->len);
-        if (err == MDS_EOK) {
+        if (MDS_ErrIsSame(err, MDS_EOK)) {
             err = DRV_I2C_SlaveWait(hi2c, len, timeout);
         }
     }
-    if (err != MDS_EOK) {
+    if (!MDS_ErrIsSame(err, MDS_EOK)) {
         DRV_I2C_SlaveAbort(hi2c);
     }
 

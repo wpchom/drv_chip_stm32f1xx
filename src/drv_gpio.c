@@ -108,7 +108,7 @@ void DRV_GPIO_PinIRQHandler(DEV_GPIO_Object_t *object)
 }
 
 /* Driver ------------------------------------------------------------------ */
-static MDS_Err_t DDRV_GPIO_PortControl(const DEV_GPIO_Module_t *gpio, MDS_Item_t cmd,
+static MDS_Err_t DDRV_GPIO_PortControl(const DEV_GPIO_Module_t *gpio, MDS_DevCmd_t cmd,
                                        MDS_Arg_t *arg)
 {
     MDS_ASSERT(gpio != NULL);

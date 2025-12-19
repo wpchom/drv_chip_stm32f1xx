@@ -39,7 +39,8 @@
 #elif defined(STM32F107xC)
 #include "startup/stm32f107xc.c.in"
 #else
-#error "Please select first the target STM32F1xx device used in your application (in stm32f1xx.h file)"
+#error                                                                                            \
+    "Please select first the target STM32F1xx device used in your application (in stm32f1xx.h file)"
 #endif
 
 /**
@@ -47,19 +48,6 @@
  */
 
 /* Function ---------------------------------------------------------------- */
-__attribute__((weak, naked, noreturn)) void _start(void)
-{
-    __asm volatile("bl     main");
-    __asm volatile("b      .");
-}
-
-__attribute__((weak, naked, noreturn)) void _exit(int res)
-{
-    (void)(res);
-
-    __asm volatile("b      .");
-}
-
 __attribute__((weak)) void VectorInit(uintptr_t vectorAddress)
 {
     SysTick->CTRL = 0U;
@@ -115,4 +103,11 @@ __attribute__((__noreturn__)) void DRV_CHIP_JumpIntoDFU(void)
 __attribute__((__noreturn__)) void DRV_CHIP_SystemReset(void)
 {
     NVIC_SystemReset();
+}
+
+// gcc
+__attribute__((naked, noreturn)) void _exit(void)
+{
+    for (;;) {
+    }
 }

@@ -23,7 +23,7 @@ static inline MDS_Err_t DRV_HalStatusToMdsErr(HAL_StatusTypeDef status)
     } else if (status == HAL_BUSY) {
         return (MDS_EBUSY);
     } else if (status == HAL_TIMEOUT) {
-        return (MDS_ETIMEOUT);
+        return (MDS_ETIME);
     } else {
         return (MDS_EIO);
     }

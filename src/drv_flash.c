@@ -38,12 +38,12 @@ size_t DRV_FLASH_Sector(uintptr_t addr, size_t *align)
 
 MDS_Err_t DRV_FLASH_Read(uintptr_t addr, uint8_t *data, size_t len, size_t *read)
 {
-    size_t size = MDS_MemBuffCopy(data, len, (uint8_t *)addr, len);
+    memcpy(data, (uint8_t *)addr, len);
     if (read != NULL) {
-        *read = size;
+        *read = len;
     }
 
-    return ((size == len) ? (MDS_EOK) : (MDS_EIO));
+    return (MDS_EOK);
 }
 
 MDS_Err_t DRV_FLASH_Program(uintptr_t addr, const uint8_t *data, size_t len, size_t *write)
@@ -90,15 +90,14 @@ MDS_Err_t DRV_FLASH_Erase(uintptr_t addr, size_t size, size_t *erase)
     HAL_FLASH_Lock();
 
     if (erase != NULL) {
-        *erase = FLASH_PAGE_SIZE *
-                 ((pageError == 0xFFFFFFFFU) ? (eraseInit.NbPages) : (pageError));
+        *erase = FLASH_PAGE_SIZE * ((pageError == 0xFFFFFFFFU) ? (eraseInit.NbPages) : (pageError));
     }
 
     return (DRV_HalStatusToMdsErr(status));
 }
 
 /* Driver ------------------------------------------------------------------ */
-static MDS_Err_t DDRV_FLASH_Control(const DEV_STORAGE_Adaptr_t *storage, MDS_Item_t cmd,
+static MDS_Err_t DDRV_FLASH_Control(const DEV_STORAGE_Adaptr_t *storage, MDS_DevCmd_t cmd,
                                     MDS_Arg_t *arg)
 {
     MDS_ASSERT(storage != NULL);

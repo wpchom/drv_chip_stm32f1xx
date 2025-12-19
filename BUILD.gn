@@ -2,14 +2,14 @@ declare_args() {
   drv_chip_without_interrupt = false
 }
 
-pkggroup("mds_device") {
-}
-
 pkggroup("stm32f1xx_hal_driver") {
 }
 
-config("drv_chip_stm32f1xx_config") {
-  include_dirs = [ "inc/" ]
+pkggroup("mds") {
+}
+
+config("drv_chip_stm32f1xx_cfg") {
+  include_dirs = [ "include/" ]
 }
 
 static_library("drv_chip_stm32f1xx") {
@@ -27,9 +27,9 @@ static_library("drv_chip_stm32f1xx") {
   }
 
   public_deps = [
-    ":mds_device",
+    ":mds",
     ":stm32f1xx_hal_driver",
   ]
 
-  public_configs = [ ":drv_chip_stm32f1xx_config" ]
+  public_configs = [ ":drv_chip_stm32f1xx_cfg" ]
 }
