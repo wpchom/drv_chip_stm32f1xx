@@ -106,8 +106,15 @@ __attribute__((__noreturn__)) void DRV_CHIP_SystemReset(void)
 }
 
 // gcc
-__attribute__((naked, noreturn)) void _exit(void)
+__attribute__((weak, naked, __noreturn__)) void _start(void)
 {
-    for (;;) {
-    }
+    __asm volatile("bl     main");
+    __asm volatile("b      .");
 }
+
+__attribute__((naked, __noreturn__)) void _exit(int status)
+{
+    (void)(status);
+    __asm volatile("b      .");
+}
+

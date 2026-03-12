@@ -98,17 +98,16 @@ MDS_Err_t DRV_FLASH_Erase(uintptr_t addr, size_t size, size_t *erase)
 
 /* Driver ------------------------------------------------------------------ */
 static MDS_Err_t DDRV_FLASH_Control(const DEV_STORAGE_Adaptr_t *storage, MDS_DevCmd_t cmd,
-                                    MDS_Arg_t *arg)
+                                    MDS_Arg_t arg)
 {
     MDS_ASSERT(storage != NULL);
 
     UNUSED(arg);
 
     switch (cmd) {
+        case MDS_DEVICE_CMD_HANDLESZ:
         case MDS_DEVICE_CMD_INIT:
         case MDS_DEVICE_CMD_DEINIT:
-        case MDS_DEVICE_CMD_HANDLESZ:
-            return (MDS_EOK);
         case MDS_DEVICE_CMD_OPEN:
         case MDS_DEVICE_CMD_CLOSE:
             return (MDS_EOK);

@@ -1,5 +1,5 @@
 declare_args() {
-  drv_chip_without_interrupt = false
+  drv_chip_without_irq = false
 }
 
 pkggroup("stm32f1xx_hal_driver") {
@@ -22,8 +22,8 @@ static_library("drv_chip_stm32f1xx") {
 
   defines = []
 
-  if (defined(drv_chip_without_interrupt) && drv_chip_without_interrupt) {
-    defines += [ "DRV_CHIP_WITHOUT_INTERRUPT=1" ]
+  if (defined(drv_chip_without_irq) && drv_chip_without_irq) {
+    defines += [ "DRV_CHIP_WITHOUT_IRQ=1" ]
   }
 
   public_deps = [
